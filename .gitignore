@@ -1,0 +1,5 @@
+# Keep secret keys out of version control
+secret_keys.py
+
+# Ignore venv stuffs
+venv/*
