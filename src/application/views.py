@@ -111,7 +111,7 @@ def scrape_everything():
     scrapers = [SmokeScraper()]
     for scraper in scrapers:
         for show in scraper.scrape():
-            if Show.query(Show.url == show.get('url')).fetch():
+            if Show.query(Show.url == show.get('url'), Show.date == show.get('date')).fetch():
                 # import pdb; pdb.set_trace()
                 continue
             new_show = Show(

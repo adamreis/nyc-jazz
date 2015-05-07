@@ -10,23 +10,24 @@ class SmokeScraper:
         self.default_cover = 0
 
     def scrape(self):
-        links = self.get_show_links()
-        import pdb; pdb.set_trace()
-        for l in links:
-            yield self.get_show_details(l)
+        for date, link in self.get_show_dates_and_links():
+            yield self.get_show_details(date, link)
 
-    def get_show_links(self):
+    def get_show_dates_and_links(self):
         calendar_url = "http://www.smokejazz.com/index.php/calendar/"
         soup = make_soup(calendar_url)
-        cal_entries = soup.find_all("div", {"class" : "event_entry tab-pane active"})
-        links = [[self.base_url + a["href"] for a in entry.findAll("a")][0] for entry in cal_entries]
-        import pdb; pdb.set_trace()
-        return links
+        cal_entries = soup.find_all("div", "cal_entries")
+        for entry in cal_entries:
+            contents = entry.contents
+            date = parse(contents[0].string).date()
+            for event in contents[1::2]:
+                link = self.base_url + event.find('a')['href']
+                yield (date, link)
 
-    def get_show_details(self, show_url):
+    def get_show_details(self, date, show_url):
         soup = make_soup(show_url)
         title = puncify(soup.find("h2", "uppercase").string)
-        date = parse(soup.find("nobr").string).date()
+        # date = parse(soup.find("nobr").string).date()
         table_stuff = soup.find_all("table", "set-times")[1].find_all("td")
         times = [parse(t.string).time() for t in table_stuff[::2]]
         info = table_stuff[1::2]
