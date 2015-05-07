@@ -18,7 +18,9 @@ from flask_cache import Cache
 from application import app
 from decorators import login_required, admin_required
 from forms import ExampleForm
-from models import ExampleModel
+from models import ExampleModel, Show
+
+from scrapers.smoke import SmokeScraper
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -103,4 +105,26 @@ def warmup():
 
     """
     return ''
+
+def scrape_everything():
+    counter = 0
+    scrapers = [SmokeScraper()]
+    for scraper in scrapers:
+        for show in scraper.scrape():
+            if Show.query(Show.url == show.get('url')).fetch():
+                # import pdb; pdb.set_trace()
+                continue
+            new_show = Show(
+                venue = show.get('venue'),
+                title = show.get('title'),
+                description = show.get('description'),
+                date = show.get('date'),
+                times = show.get('times'),
+                prices = show.get('prices'),
+                price_descriptions = show.get('price_descriptions'),
+                url = show.get('url')
+            )
+            new_show.put()
+            counter += 1
+    return 'ayooo {}'.format(counter)
 

@@ -4,12 +4,14 @@ from dateutil.parser import parse
 
 class SmokeScraper:
     def __init__(self):
+        self.venue_name = "Smoke Jazz & Supper Club"
         self.base_url = "http://www.smokejazz.com"
         self.default_minimum = 20
         self.default_cover = 0
 
     def scrape(self):
         links = self.get_show_links()
+        import pdb; pdb.set_trace()
         for l in links:
             yield self.get_show_details(l)
 
@@ -18,6 +20,7 @@ class SmokeScraper:
         soup = make_soup(calendar_url)
         cal_entries = soup.find_all("div", {"class" : "event_entry tab-pane active"})
         links = [[self.base_url + a["href"] for a in entry.findAll("a")][0] for entry in cal_entries]
+        import pdb; pdb.set_trace()
         return links
 
     def get_show_details(self, show_url):
@@ -25,16 +28,19 @@ class SmokeScraper:
         title = puncify(soup.find("h2", "uppercase").string)
         date = parse(soup.find("nobr").string).date()
         table_stuff = soup.find_all("table", "set-times")[1].find_all("td")
-        times = [t.string for t in table_stuff[::2]]
+        times = [parse(t.string).time() for t in table_stuff[::2]]
         info = table_stuff[1::2]
-        prices = self.figure_out_prices(info, show_url)
-
+        prices, price_descriptions = zip(*self.figure_out_prices(info, show_url))
+        description = puncify(''.join(soup.find("div", "col-sm-12 col-md-5 col-lg-5 txt-drk").strings))
         return {
             'url': show_url,
             'title': title,
             'date': date,
             'times': times,
-            'prices': prices
+            'prices': prices,
+            'price_descriptions': price_descriptions,
+            'venue': self.venue_name,
+            'description': description
         }
 
     def figure_out_prices(self, table_entries, show_url):

@@ -15,3 +15,14 @@ class ExampleModel(ndb.Model):
     example_description = ndb.TextProperty(required=True)
     added_by = ndb.UserProperty()
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
+
+class Show(ndb.Model):
+    """A jazz show!"""
+    venue = ndb.StringProperty()
+    title = ndb.StringProperty()
+    description = ndb.TextProperty()
+    date = ndb.DateProperty()
+    times = ndb.TimeProperty(repeated=True)
+    prices = ndb.IntegerProperty(repeated=True)
+    price_descriptions = ndb.StringProperty(repeated=True)
+    url = ndb.StringProperty()
