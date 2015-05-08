@@ -21,6 +21,7 @@ from forms import ExampleForm
 from models import ExampleModel, Show
 
 from scrapers.smoke import SmokeScraper
+from scrapers.freetime import FreeTimeScraper
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -108,7 +109,7 @@ def warmup():
 
 def scrape_everything():
     counter = 0
-    scrapers = [SmokeScraper()]
+    scrapers = [SmokeScraper(), FreeTimeScraper()]
     for scraper in scrapers:
         for show in scraper.scrape():
             if Show.query(Show.url == show.get('url'), Show.date == show.get('date')).fetch():

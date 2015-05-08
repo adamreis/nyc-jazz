@@ -11,4 +11,4 @@ def make_soup(url):
 
 def puncify(s):
     """Replaces unicode characters with the appropriate ASCII punctuation"""
-    return s.replace(u'\xa0', u' ').replace(u'\u201c', '"').replace(u'\u201d', '"').replace(u'\u2019', "'")
+    return s.replace(u'\xa0', u' ').replace(u'\u201c', '"').replace(u'\u201d', '"').replace(u'\u2019', "'").replace(u"&amp;", '&')
