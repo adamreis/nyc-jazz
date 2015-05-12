@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from secret_keys import SENDGRID_USER, SENDGRID_PASSWORD
 
-from models import Show
+from models import Show, User
 
 
 
@@ -46,7 +46,38 @@ def all_shows_to_markdown(all_shows):
             last_date = show.date
         lines += show_to_markdown(show)
 
-    return "\n".join(lines).encode('utf-8')
+    return unicode("\n".join(lines))
+
+def send_digest():
+    sg = SendGridClient(SENDGRID_USER, SENDGRID_PASSWORD, secure=True)
+    responses = []
+
+    today, next_week = week_interval()
+    tomorrow = today + relativedelta(days=+1)
+    date_format = "%m/%d"
+    subject = 'NYC Jazz Digest: {} to {}'.format(tomorrow.strftime(date_format), next_week.strftime(date_format))
+    from_addr = 'NYC Jazz Digest <digest@jazzdigest.nyc>'
+
+    all_shows = shows_this_week()
+    text = all_shows_to_markdown(all_shows)
+    html = markdown(text)
+
+    for user in User.query(User.opt_out == False).fetch():
+        message = Mail()
+        message.set_subject(subject)
+        message.set_html(html)
+        message.set_text(text)
+        message.set_from(from_addr)
+
+        # add a recipient
+        message.add_to(user.email)
+
+        # use the Web API to send your message
+        responses.append(str(sg.send(message)))
+
+    return '\n'.join(responses)
+
+
 
 def test_emails():
     test_emails = ['adamhreis@gmail.com']

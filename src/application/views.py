@@ -77,3 +77,5 @@ def scrape_freetime():
 def email_test():
     return email_stuff.test_emails()
 
+def digest_send():
+    return email_stuff.send_digest()

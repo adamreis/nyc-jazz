@@ -25,7 +25,7 @@ app.add_url_rule('/scrape-freetime', view_func=views.scrape_freetime, methods=['
 
 # Email all the shit
 app.add_url_rule('/email-test', view_func=views.email_test, methods=['GET'])
-
+app.add_url_rule('/digest-send', view_func=views.digest_send, methods=['GET'])
 # Add new user
 app.add_url_rule('/signup', view_func=views.signup, methods=['POST'])
 
