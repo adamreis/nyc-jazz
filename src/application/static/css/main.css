@@ -28,7 +28,7 @@ html {
 .centerblock {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 60%;
     width: 18em;
     height: 8em;
     margin-left: -9em;
@@ -39,13 +39,30 @@ html {
 
 h1 {
   font-family: 'Poiret One', cursive;
-  font-size: 5em;
+  font-size: 7vw;
+}
+
+h3 {
+  font-family: 'Poiret One', cursive;
+  font-size: 3vw;
+  line-height: 120%;
 }
 
 .center-top {
   position: absolute;
   left: 50%;
   top: 15%;
+  width: 50%;
+  height: 6em;
+  margin-left: -25%;
+  text-align: center;
+  color: #fff;
+}
+
+.center-middle {
+  position: absolute;
+  left: 50%;
+  top: 32%;
   width: 50%;
   height: 6em;
   margin-left: -25%;
