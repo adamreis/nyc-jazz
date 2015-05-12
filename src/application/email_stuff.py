@@ -8,7 +8,7 @@ from secret_keys import SENDGRID_USER, SENDGRID_PASSWORD
 
 from models import Show, User
 
-
+ROOT_URL = 'nyc-jazz.appspot.com'
 
 
 def show_to_markdown(show):
@@ -60,9 +60,13 @@ def send_digest():
 
     all_shows = shows_this_week()
     text = all_shows_to_markdown(all_shows)
-    html = markdown(text)
-
+    
     for user in User.query(User.opt_out == False).fetch():
+        unsubcribe_link = ROOT_URL + '/unsubscribe/' + user.uuid
+        unsubscribe_phrase = "\n\nClick [here]({}) to unsubscribe.".format(unsubcribe_link)
+        text += unsubscribe_phrase
+        html = markdown(text)
+
         message = Mail()
         message.set_subject(subject)
         message.set_html(html)

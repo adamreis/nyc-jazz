@@ -25,6 +25,8 @@ import email_stuff
 
 import threading
 
+import uuid
+
 # Flask-Cache (configured to use App Engine Memcache API)
 cache = Cache(app)
 
@@ -41,7 +43,10 @@ def home():
             existing.opt_out = False
             existing.put()
         else:
-            new_user = User(email=email)
+            new_user = User(
+                email = email,
+                uuid = str(uuid.uuid4())
+            )
             new_user.put()
         flash("You've signed up for weekly updates!")
         return redirect(url_for("home"))
@@ -56,12 +61,14 @@ def warmup():
     """
     return ''
 
-def signup():
-    import pdb; pdb.set_trace()
-    form = SignupForm()
-    if form.validate_on_submit():
-        email = form.email.data
-    return 'woo'
+def unsubscribe(identifier):
+    user = User.query(User.uuid == identifier).fetch(1)[0]
+
+    if user:
+        user.opt_out = True
+        user.put()
+
+    return '{} has been unsubscribed'.format(user.email)
 
 def scrape_everything():
     return redirect(url_for('scrape_smoke'))

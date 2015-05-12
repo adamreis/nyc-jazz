@@ -31,3 +31,4 @@ class User(ndb.Model):
     date_created = ndb.DateTimeProperty(auto_now_add=True)
     email = ndb.StringProperty(required=True)
     opt_out = ndb.BooleanProperty(default=False)
+    uuid = ndb.StringProperty(required=True)
