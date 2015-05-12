@@ -32,7 +32,7 @@ def week_interval():
 def shows_this_week():
     today, next_week = week_interval()
     qry = Show.query(Show.date > today, Show.date <= next_week)
-    qry.order(Show.date, Show.earliest_time)
+    qry.order(Show.date, Show.times)
     return qry.fetch()
 
 def all_shows_to_markdown(all_shows):
