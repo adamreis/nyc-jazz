@@ -17,3 +17,4 @@ from .models import ExampleModel
 
 class SignupForm(wtf.Form):
     email = wtf.TextField('Email Address', [validators.Length(min=6, max=35)])
+    submit = wtf.SubmitField("Sign In")

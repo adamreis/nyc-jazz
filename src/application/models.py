@@ -26,3 +26,8 @@ class Show(ndb.Model):
     prices = ndb.IntegerProperty(repeated=True)
     price_descriptions = ndb.StringProperty(repeated=True)
     url = ndb.StringProperty()
+
+class User(ndb.Model):
+    date_created = ndb.DateTimeProperty(auto_now_add=True)
+    email = ndb.StringProperty(required=True)
+    opt_out = ndb.BooleanProperty(default=False)

@@ -18,18 +18,25 @@ from flask_cache import Cache
 from application import app
 from decorators import login_required, admin_required
 from forms import SignupForm
-from models import ExampleModel, Show
+from models import User
 
-from scrapers.smoke import SmokeScraper
-from scrapers.freetime import FreeTimeScraper
-
+import scrapers
+import threading
 
 # Flask-Cache (configured to use App Engine Memcache API)
 cache = Cache(app)
 
 
 def home():
-    return render_template('index.html')
+    form = SignupForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        new_user = User(email=email)
+        new_user.put()
+        flash("You've signed up for weekly updates!")
+        return redirect(url_for("home"))
+
+    return render_template('index.html', form=form)
 
 
 def warmup():
@@ -41,30 +48,21 @@ def warmup():
 
 def signup():
     import pdb; pdb.set_trace()
-    form = SignupForm(request.form)
-    if form.validate():
+    form = SignupForm()
+    if form.validate_on_submit():
         email = form.email.data
     return 'woo'
 
 def scrape_everything():
-    counter = 0
-    scrapers = [SmokeScraper(), FreeTimeScraper()]
-    for scraper in scrapers:
-        for show in scraper.scrape():
-            if Show.query(Show.url == show.get('url'), Show.date == show.get('date')).fetch():
-                # import pdb; pdb.set_trace()
-                continue
-            new_show = Show(
-                venue = show.get('venue'),
-                title = show.get('title'),
-                description = show.get('description'),
-                date = show.get('date'),
-                times = show.get('times'),
-                prices = show.get('prices'),
-                price_descriptions = show.get('price_descriptions'),
-                url = show.get('url')
-            )
-            new_show.put()
-            counter += 1
-    return 'ayooo {}'.format(counter)
+    return redirect(url_for('scrape_smoke'))
+
+def scrape_smoke():
+    scrapers.scrape_all(scrapers.SmokeScraper())
+    return redirect(url_for('scrape_freetime'))
+
+def scrape_freetime():
+    scrapers.scrape_all(scrapers.FreeTimeScraper())
+    return "you're scraped!"
+
+
 

@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" class="no-js">
+<!doctype html>
+<title>NYC Jazz Digest</title>
+
 {% set bootstrap_version = '2.3.2' %}
 {% set jquery_version = '1.11.1' %}
 
@@ -12,6 +13,7 @@
     <!-- <link href="//netdna.bootstrapcdn.com/font-awesome/{{ awesome_version }}/css/font-awesome.min.css" rel="stylesheet" >
     <link href="//netdna.bootstrapcdn.com/bootswatch/{{ bootswatch_version }}/{{ bootswatch_theme }}/bootstrap.min.css" rel="stylesheet" > -->
     <style>  </style> <!-- Bootstrap -->
+    <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
     <link href="/static/css/main.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/static/img/favicon.ico" />
     {% block style_block %}{# page-specific CSS #}{% endblock %}
@@ -19,39 +21,42 @@
 </head>
 
 <body>
-    <form class="form-vertical" action="/signup" method="post">
-        <p class="help-block">Email</p>
-        <div class="input-prepend">
-            <span class="add-on">@</span><input class="prependedInput" size="16" type="email", id="email">
+    <div class="background-image"></div>
+
+
+    <div class="center-top">
+        <h1> NYC Jazz Digest</h1>
+    </div>
+    {% block content %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <div class="alert alert-success"> {{ message }} </p>
+        {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    {% block body %}{% endblock %}
+    {% for field in form.errors %}
+        {% for error in form.errors[field] %}
+        <div class="alert alert-error">
+            <strong>Oops...</strong> {{error}}.
         </div>
-        <div class="help-block">
-            <button type="submit" class="btn btn-large btn-info">Sign up</button>
-        </div>
-    </form>
-<!--     <form action="/signup" method="post">
-        <div>
-            <label for="name">Name:</label>
-            <input type="text" id="name" />
-        </div>
-        <div>
-            <label for="mail">E-mail:</label>
-            <input type="email" id="mail" />
-        </div>
-        <div>
-            <label for="msg">Message:</label>
-            <textarea id="msg"></textarea>
-        </div>
-        
-        <div class="button">
-            <button type="submit">Send your message</button>
-        </div>
-    </form> -->
-<!-- 
-    <form method="post" action="/signup">
-                  <label for="yourname">Please enter your name:</label>
-                  <input type="text" name="yourname" /><br />
-                  <label for="youremail">Please enter your email:</label>
-                  <input type="text" name="youremail" /><br />
-                  <input type="submit" />
-                </form> -->
+        {% endfor %}
+    {% endfor %}
+    <div class="centerblock">
+        <form class="form-vertical" action="{{ url_for('home') }}" method="post">
+            {{ form.hidden_tag() }}
+            <!-- <p class="help-block">Email</p> -->
+            <div class="input-prepend">
+                <!-- <span class="add-on">@</span> -->
+                {{ form.email(class="prependedInput", size="16", type="email", id="email", placeholder="EMAIL ADDRESS") }}
+            </div>
+            <div class="help-block">
+                <button type="submit" class="signupbutton">Sign up</button>
+            </div>
+        </form>
+    </div>
+    {% endblock %}
 </body>

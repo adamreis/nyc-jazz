@@ -16,10 +16,13 @@ from application import views
 app.add_url_rule('/_ah/warmup', 'warmup', view_func=views.warmup)
 
 # Home page
-app.add_url_rule('/', 'home', view_func=views.home)
+app.add_url_rule('/', 'home', view_func=views.home, methods=['GET', 'POST'])
 
 # Download all the shit
 app.add_url_rule('/scrape', view_func=views.scrape_everything, methods=['GET', 'POST'])
+app.add_url_rule('/scrape-smoke', view_func=views.scrape_smoke, methods=['GET', 'POST'])
+app.add_url_rule('/scrape-freetime', view_func=views.scrape_freetime, methods=['GET', 'POST'])
+
 
 # Add new user
 app.add_url_rule('/signup', view_func=views.signup, methods=['POST'])
