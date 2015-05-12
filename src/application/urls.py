@@ -23,6 +23,8 @@ app.add_url_rule('/scrape', view_func=views.scrape_everything, methods=['GET', '
 app.add_url_rule('/scrape-smoke', view_func=views.scrape_smoke, methods=['GET', 'POST'])
 app.add_url_rule('/scrape-freetime', view_func=views.scrape_freetime, methods=['GET', 'POST'])
 
+# Email all the shit
+app.add_url_rule('/email-test', view_func=views.email_test, methods=['GET'])
 
 # Add new user
 app.add_url_rule('/signup', view_func=views.signup, methods=['POST'])

@@ -21,6 +21,8 @@ from forms import SignupForm
 from models import User
 
 import scrapers
+import email_stuff
+
 import threading
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -31,8 +33,16 @@ def home():
     form = SignupForm()
     if form.validate_on_submit():
         email = form.email.data
-        new_user = User(email=email)
-        new_user.put()
+        
+        existing = User.query(User.email == email).fetch()
+
+        if existing:
+            existing = existing[0]
+            existing.opt_out = False
+            existing.put()
+        else:
+            new_user = User(email=email)
+            new_user.put()
         flash("You've signed up for weekly updates!")
         return redirect(url_for("home"))
 
@@ -64,5 +74,6 @@ def scrape_freetime():
     scrapers.scrape_all(scrapers.FreeTimeScraper())
     return "you're scraped!"
 
-
+def email_test():
+    return email_stuff.test_emails()
 
