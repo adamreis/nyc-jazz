@@ -1,0 +1,7 @@
+cron:
+- description: fetch new concerts every day
+  url: /scrape
+  schedule: every day 20:00
+- description: send digest emails every sunday night
+  url: /digest-send
+  schedule: every sunday 21:00
